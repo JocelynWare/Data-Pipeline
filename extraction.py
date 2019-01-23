@@ -336,7 +336,7 @@ def optimal_extraction(stripes, err_stripes=None, ron_stripes=None, RON=0., slit
 
     # read in polynomial coefficients of best-fit individual-fibre-profile parameters
     if simu:
-        fibparms = np.load('/Users/Jacob/Desktop/mq_spectrograph/data/fibparms_by_ord.npy').item()
+        fibparms = np.load('C:\\Users\\Jocelyn\\Documents\\Uni\\Internship\\Fake_data\\fibparms_by_ord.npy').item()
     else:
         # fibparms = np.load('/Users/christoph/OneDrive - UNSW/fibre_profiles/real/first_real_veloce_test_fps.npy').item()
         # fibparms = np.load('/Users/christoph/OneDrive - UNSW/fibre_profiles/real/from_master_white_40orders.npy').item()
@@ -596,14 +596,14 @@ def optimal_extraction_from_indices(img, stripe_indices, err_img=None, RON=0., s
     # read in polynomial coefficients of best-fit individual-fibre-profile parameters
     ### need this fibre parameter file for extraction ###
     if simu:
-        fibparms = np.load('/Users/Jacob/Desktop/mq_spectrograph/data/fibparms_by_ord.npy').item()
+        fibparms = np.load('C:\\Users\\Jocelyn\\Documents\\Uni\\Internship\\Fake_data\\fibparms_by_ord.npy').item()
     else:
         # fibparms = np.load('/Users/christoph/OneDrive - UNSW/fibre_profiles/real/first_real_veloce_test_fps.npy').item()
         # fibparms = np.load('/Users/christoph/OneDrive - UNSW/fibre_profiles/real/from_master_white_40orders.npy').item()
         # fibparms = np.load('/Users/christoph/OneDrive - UNSW/fibre_profiles/fibre_profile_fits_20180925.npy').item()
         print('Oha! Loading NEWest fibre profile parameters...')
         #fibparms = np.load('/Users/christoph/OneDrive - UNSW/fibre_profiles/fibre_profile_fits_20181107.npy').item()
-        fibparms = np.load('/Users/Jacob/Desktop/mq_spectrograph/data/fibparms_by_ord.npy').item() # added this line in and commented out the above one to run code?
+        fibparms = np.load('C:\\Users\\Jocelyn\\Documents\\Uni\\Internship\\Fake_data\\fibparms_by_ord.npy').item() # added this line in and commented out the above one to run code?
 
     flux = {}
     err = {}

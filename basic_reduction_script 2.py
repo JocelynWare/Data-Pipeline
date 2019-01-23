@@ -26,16 +26,16 @@ from process_scripts import process_whites, process_science_images
 # just as when you pull files from the respository, the code re-writes over the code you are working on
 
 # path to raw fits files
-path = '/Users/Jacob/Desktop/data_for_mq/'
+path = 'C:\\Users\\Jocelyn\\Documents\\Uni\\Internship\\Fake_data'
 
 
 
 # (0) GET FILE INFO  ################################################################################################################################
 # bias_list = glob.glob(path + 'Bias*.fits')
 # dark_list = glob.glob(path + 'Dark*.fits')
-white_list = glob.glob(path + '*flat*.fit')
-stellar_list = glob.glob(path + '*solar*.fit')
-laser_list = glob.glob(path + '*laser*.fit')
+white_list = glob.glob(path + '\*flat*.fit')
+stellar_list = glob.glob(path + '\*solar*.fit')
+laser_list = glob.glob(path + '\*laser*.fit')
 
 dumimg = pyfits.getdata(stellar_list[0])
 ny,nx = dumimg.shape
