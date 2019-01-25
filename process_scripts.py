@@ -165,7 +165,7 @@ def process_whites(white_list, MB=None, ronmask=None, MD=None, gain=None, scalab
 
     #now save master white to file
     if savefile:
-        outfn = path+'master_white.fit' # changed from .fits to .fit to see if line 1153 in extraction.py will run
+        outfn = path+'master_white.fits'
         pyfits.writeto(outfn, master, clobber=True)
         pyfits.setval(outfn, 'HISTORY', value='   MASTER WHITE frame - created '+time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())+' (GMT)')
         # pyfits.setval(outfn, 'EXPTIME', value=texp, comment='exposure time [s]')
@@ -242,7 +242,7 @@ def process_science_images(imglist, P_id, mask=None, sampling_size=25, slit_heig
     
     if not from_indices:
         ron_stripes = extract_stripes(ronmask, P_id, return_indices=False, slit_height=slit_height, savefiles=False, timit=True)
-
+    
     for i,filename in enumerate(sorted(imglist)):
 
         print('Extracting stellar spectrum '+str(i+1)+'/'+str(len(imglist)))
@@ -251,9 +251,9 @@ def process_science_images(imglist, P_id, mask=None, sampling_size=25, slit_heig
         dum = filename.split('/')
         dum2 = dum[-1].split('.')
         obsname = dum2[0]
-
+              
         # (1) call routine that does all the bias and dark correction stuff and proper error treatment
-        img = correct_for_bias_and_dark_from_filename(filename, MB, MD, gain=gain, scalable=scalable, savefile=saveall, path=path, timit=True, simu=True)   #[e-] # simu added in for Echelle++
+        img = correct_for_bias_and_dark_from_filename(filename, MB, MD, gain=gain, scalable=scalable, savefile=saveall, path=path, timit=True, simu=True)   #[e-] # added simu=True
         #err = np.sqrt(img + ronmask*ronmask)   # [e-]
         #TEMPFIX:
         err_img = np.sqrt(np.clip(img,0,None) + ronmask*ronmask)   # [e-]
@@ -285,19 +285,13 @@ def process_science_images(imglist, P_id, mask=None, sampling_size=25, slit_heig
         if from_indices:
             pix,flux,err = extract_spectrum_from_indices(final_img, err_img, stripe_indices, method='quick', slit_height=slit_height, RON=ronmask, savefile=True,
                                                          filetype='fits', obsname=obsname, path=path, timit=True)
-            pix,flux,err = extract_spectrum_from_indices(final_img, err_img, stripe_indices, method=ext_method, slope=slope, offset=offset, fibs=fibs, slit_height=slit_height, 
-                                                         RON=ronmask, savefile=True, filetype='fits', obsname=obsname, path=path, timit=True)
+            pix,flux,err = extract_spectrum_from_indices(final_img, err_img, stripe_indices, method=ext_method, slope=slope, offset=offset, fibs=fibs, slit_height=slit_height,
+                                                         RON=ronmask, savefile=True, filetype='fits', obsname=obsname, path=path, timit=True, simu=True, fibpos='05') # added simu=True and fibpos='05'
         else:
             pix2,flux2,err2 = extract_spectrum(stripes, err_stripes=err_stripes, ron_stripes=ron_stripes, method=ext_method, slope=slope, offset=offset, fibs=fibs, 
                                                slit_height=slit_height, RON=ronmask, savefile=False, filetype='fits', obsname=obsname, path=path, timit=True)
     
-#         # (7) get relative intensities of different fibres
-#         if from_indices:
-#             relints = get_relints_from_indices(P_id, final_img, err_img, stripe_indices, mask=mask, sampling_size=sampling_size, slit_height=slit_height, return_full=False, timit=True) 
-#         else:
-#             relints = get_relints(P_id, stripes, err_stripes, mask=mask, sampling_size=sampling_size, slit_height=slit_height, return_full=False, timit=True)
-# 
-#     
+
 #         # (8) get wavelength solution
 #         #XXXXX
 

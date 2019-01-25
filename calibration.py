@@ -68,13 +68,13 @@ def make_median_image(imglist, MB=None, scalable=False, raw=False):
 def make_quadrant_masks(nx, ny):
     # define four quadrants via masks
     q1 = np.zeros((ny, nx), dtype='bool')
-    q1[:(ny / 2), :(nx / 2)] = True
+    q1[:int(ny / 2), :int(nx / 2)] = True # added the int before code to set their type to integers
     q2 = np.zeros((ny, nx), dtype='bool')
-    q2[:(ny / 2), (nx / 2):] = True
+    q2[:int(ny / 2), int(nx / 2):] = True # added the int before code to set their type to integers
     q3 = np.zeros((ny, nx), dtype='bool')
-    q3[(ny / 2):, (nx / 2):] = True
+    q3[int(ny / 2):, int(nx / 2):] = True # added the int before code to set their type to integers
     q4 = np.zeros((ny, nx), dtype='bool')
-    q4[(ny / 2):, :(nx / 2)] = True
+    q4[int(ny / 2):, :int(nx / 2)] = True # added the int before code to set their type to integers
 
     return q1, q2, q3, q4
 
@@ -93,19 +93,17 @@ def crop_overscan_region(img):
     """
 
     #correct orientation if needed
-    #if img.shape == (4112, 4202): # commented out because this is veloce code
-    if img.shape == (4096,4096):
+    if img.shape == (4112, 4202):
         img = correct_orientation(img)
 
-    #if img.shape != (4202, 4112): # commented out because this is veloce code
-    if img.shape != (4096,4096):
+    if img.shape != (4202, 4112):
         print('ERROR: wrong image size encountered!!!')
         return
 
     #crop overscan region
-    #good_img = img[53:4149,:] # commented out because this is veloce code
+    good_img = img[53:4149,:]
 
-    #return good_img
+    return good_img
 
 
 
@@ -722,7 +720,6 @@ def correct_for_bias_and_dark_from_filename(imgname, MB, MD, gain=None, scalable
 
     #(0) read in raw image [ADU] 
     img = pyfits.getdata(imgname)
-
     if not simu:
         #bring to "correct" orientation
         img = correct_orientation(img)
@@ -731,16 +728,14 @@ def correct_for_bias_and_dark_from_filename(imgname, MB, MD, gain=None, scalable
 
     #(1) BIAS SUBTRACTION [ADU]
     #bias-corrected_image
-    print(img) # debugging
-    print(MB) # debugging
     bc_img = img - MB
 
 
     #(2) conversion to ELECTRONS and DARK SUBTRACTION [e-]
     #if the darks have a different exposure time than the images you are trying to correct, we need to re-scale the master dark
     if scalable:
-        texp = pyfits.getval(imgname, 'exptime') # uncommented because the files have this header
-        #texp = pyfits.getval(imgname, 'TOTALEXP') # commented out because the headers do not have totalexp
+        texp = pyfits.getval(imgname, 'exptime') # uncommented this line as our tests have exptime headers
+        #texp = pyfits.getval(imgname, 'TOTALEXP') # commented out as our tests do not have these headers
         if texp is not None:
             MD = MD * texp
 #             #cannot have an error estimate lower than the read-out noise; this is dodgy but don't know what else to do

@@ -1028,11 +1028,9 @@ def correct_orientation(img, verbose=False):
     
     ny, nx = img.shape
     
-    #if (ny,nx) == (4112,4202): # commented out because this is veloce code
-    if (ny,nx) == (4096,4096):
+    if (ny,nx) == (4112,4202):
         img = np.fliplr(img.T)
-    #elif (ny,nx) == (4202,4112): # commented out because this is veloce code
-    elif (ny,nx) == (4096,4096):
+    elif (ny,nx) == (4202,4112):
         # this means the image is already in the correct orientation
         if verbose:
             print('The image is already in the correct orientation!')
