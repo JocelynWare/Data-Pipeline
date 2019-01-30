@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 from helper_functions import short_filenames
 from calibration import get_bias_and_readnoise_from_bias_frames, make_offmask_and_ronmask, make_master_bias_from_coeffs, make_master_dark, correct_orientation, crop_overscan_region
-from order_tracing import find_stripes, make_P_id, make_mask_dict, extract_stripes #, find_tramlines
+from order_tracing import find_stripes, make_P_id, make_mask_dict, extract_stripes # find_tramlines
 from spatial_profiles import fit_profiles, fit_profiles_from_indices
 from extraction import *
 from process_scripts import process_whites, process_science_images
@@ -108,11 +108,17 @@ MW_stripes,MW_indices = extract_stripes(MW, P_id, return_indices=True, slit_heig
 pix,flux,err = extract_spectrum_from_indices(MW, err_MW, MW_indices, method='quick', slit_height=7, RON=ronmask,
                                              savefile=True, filetype='fits', obsname='master_white', path=path,
                                              timit=True)
+
+np.save(path + 'flux.npy', flux) # added so the flux can be used in plot_test.py
+
 ## optimal method of extraction
-pix,flux,err = extract_spectrum_from_indices(MW, err_MW, MW_indices, method='optimal', slope=False, offset=False,
-                                             fibs='single', fibpos='05', slit_height=7, RON=ronmask, simu=True,
-                                             savefile=True, filetype='fits', obsname='master_white', path=path,
-                                             timit=True)
+## commented out because we are moving forward using the quick method
+# pix,flux,err = extract_spectrum_from_indices(MW, err_MW, MW_indices, method='optimal', slope=False, offset=False,
+#                                             fibs='single', fibpos='05', slit_height=7, RON=ronmask, simu=True,
+#                                             savefile=True, filetype='fits', obsname='master_white', path=path,
+#                                             timit=True)
+
+#np.save(path + 'flux.npy', flux) # added so the flux can be used in plot_test.py
 
 #######################################################################################################################
 
@@ -147,10 +153,16 @@ pix,flux,err = extract_spectrum_from_indices(MW, err_MW, MW_indices, method='opt
 
 #######################################################################################################################
 
-# (4) PROCESS SCIENCE IMAGES
+## (4) PROCESS SCIENCE IMAGES
+## quick extraction method
 dum = process_science_images(stellar_list, P_id, mask=mask, sampling_size=25, slit_height=7, gain=gain, MB=MB,
-                             ronmask=ronmask, MD=MDS, scalable=True, saveall=False, path=path, ext_method='optimal',
+                             ronmask=ronmask, MD=MDS, scalable=True, saveall=False, path=path, ext_method='quick',
                              offset='True', slope='True', fibs='single', from_indices=True, timit=True)
+
+## optimal extraction method - DOESN'T WORK AS YET
+# dum = process_science_images(stellar_list, P_id, mask=mask, sampling_size=25, slit_height=7, gain=gain, MB=MB,
+#                             ronmask=ronmask, MD=MDS, scalable=True, saveall=False, path=path, ext_method='optimal',
+#                             offset='True', slope='True', fibs='single', from_indices=True, timit=True)
 
 #######################################################################################################################
 
