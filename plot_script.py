@@ -21,7 +21,8 @@ from flat_fielding import onedim_pixtopix_variations_single_order
 ## loads the extracted 2-d images
 ## currently only for quick method
 plot_path = '/Users/Jacob/Desktop/data_for_mq/' ## THIS NEEDS TO CHANGE BETWEEN USERS
-plot_list = sorted(glob.glob(plot_path + '*solar*' + '*quick*.fits'))
+#plot_list = sorted(glob.glob(plot_path + '*solar*' + '*quick*.fits')) # veloce simulations
+plot_list = sorted(glob.glob(plot_path + '*corrected_*' + '*quick_extracted.fits')) # mq simulations
 
 stellar_object = np.arange(0,len(plot_list))
 start_time = time.time()

@@ -734,7 +734,7 @@ def correct_for_bias_and_dark_from_filename(imgname, MB, MD, gain=None, scalable
     #(2) conversion to ELECTRONS and DARK SUBTRACTION [e-]
     #if the darks have a different exposure time than the images you are trying to correct, we need to re-scale the master dark
     if scalable:
-        texp = pyfits.getval(imgname, 'exptime') # uncommented this line as our tests have exptime headers
+        texp = pyfits.getval(imgname, 'exptime') # uncommented this line as veloce tests have exptime headers
         #texp = pyfits.getval(imgname, 'TOTALEXP') # commented out as our tests do not have these headers
         if texp is not None:
             MD = MD * texp

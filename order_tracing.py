@@ -15,7 +15,7 @@ from helper_functions import sigma_clip
 
 
 def find_stripes(flat, deg_polynomial=2, gauss_filter_sigma=3., min_peak=0.05, maskthresh=100., weighted_fits=True, slowmask=False, simu=False,
-                 timit=False, debug_level=0):
+                 timit=False, debug_level=0, save_plots=None): # added save_plots=None as default (need to set a default path and warn user)
     """
     BASED ON JULIAN STUERMER'S MAROON_X PIPELINE:
     
@@ -62,7 +62,8 @@ def find_stripes(flat, deg_polynomial=2, gauss_filter_sigma=3., min_peak=0.05, m
         plt.title('Local maxima')
         plt.plot(data)
         plt.scatter(np.arange(ny)[peaks], data[peaks],s=25)
-        plt.show()
+        plt.savefig(save_plots + 'local_maxima.png')
+        plt.close()
 
     idx = np.logical_and(peaks, data > min_peak * np.max(data))
     maxima = np.arange(ny)[idx]
@@ -78,7 +79,8 @@ def find_stripes(flat, deg_polynomial=2, gauss_filter_sigma=3., min_peak=0.05, m
         plt.plot(data)
         plt.scatter(np.arange(ny)[maxima], data[maxima],s=25, c='red')
         #plt.plot((labels[0] > 0) * np.max(data))   #what does this do???
-        plt.show()
+        plt.savefig(save_plots + 'order_peaks.png') # added to save to file
+        plt.close()
 
     n_order = len(maxima)
     #logging.info('Number of stripes found: %d' % n_order)
@@ -166,7 +168,8 @@ def find_stripes(flat, deg_polynomial=2, gauss_filter_sigma=3., min_peak=0.05, m
             plt.plot(xx, p(xx), 'g', alpha=1)
         plt.ylim((0, ny))
         plt.xlim((0, nx))
-        plt.show()    
+        plt.savefig(save_plots + 'polynomial_fit_for_order.png') # added to save to file
+        plt.close()
         
     if timit:
         print('Elapsed time: '+str(time.time() - start_time)+' seconds')
@@ -307,7 +310,10 @@ def extract_stripes(img, P_id, slit_height=25, return_indices=True, savefiles=Fa
             return
         elif obsname is None:
             print('ERROR: "obsname" not provided!!!')
-            return
+            print('PATH defined: saving to file!!!')
+            np.save(path + '_stripes.npy', stripes)
+            if return_indices:
+                np.save(path + '_stripe_indices.npy', stripe_indices)
         else:
             np.save(path + obsname + '_stripes.npy', stripes)
             if return_indices:

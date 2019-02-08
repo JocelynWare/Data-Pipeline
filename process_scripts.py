@@ -7,6 +7,8 @@ Created on 25 Jul. 2018
 import astropy.io.fits as pyfits
 import numpy as np
 import time
+import scipy
+from scipy import ndimage
 # import os
 
 from helper_functions import binary_indices

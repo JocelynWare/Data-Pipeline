@@ -2,6 +2,7 @@
 Created on 11 Aug. 2017
 
 @author: Christoph Bergmann
+@editor: Jacob Parnell
 """
 
 # import astropy.io.fits as pyfits
@@ -13,11 +14,17 @@ import math
 import datetime
 from astropy.modeling import models, fitting
 import collections
-# from scipy import ndimage
 from scipy import special, signal
 from numpy.polynomial import polynomial
 from scipy.integrate import quad, fixed_quad
 from scipy import ndimage
+import glob
+import astropy.io.fits as pyfits
+import copy
+import matplotlib.pyplot as plt
+from IPython.display import Image
+import os
+import scipy
 
 
 
@@ -1115,10 +1122,58 @@ def quick_bg_fix(raw_data, npix=4112):
 
 
 
+def orientation_test_unautomated(stellar_list, white_list, laser_list):
+    path = '/Users/Jacob/Desktop/data_for_mq/' ## THIS NEEDS TO CHANGE BETWEEN USERS
 
+    start_time = time.time()
 
+    print('correcting ' + str(len(white_list)) + ' flat frames...')
+    for n,fn in enumerate(sorted(white_list)):
+        img = pyfits.getdata(fn)
+        img = scipy.ndimage.interpolation.rotate(img, 270) # added to correct for our simulations
+        ## get headers and values to append to file
+        img_header = pyfits.getheader(fn)
+        exptime_header = img_header['exptime']
+        ## write to file
+        outfn = path + '_corrected_' + fn.split('/')[-1]
+        pyfits.writeto(outfn, img, clobber=True)
+        pyfits.setval(outfn, 'EXPTIME', value=exptime_header)
+        pyfits.setval(outfn, 'HISTORY', value='   CORRECTLY ORIENTED frame - created ' + time.strftime("%Y-%m-%d %H:%M:%S",
+                                                                                                 time.gmtime()) + ' (GMT)')
 
+    print('correcting ' + str(len(stellar_list)) + ' stellar frames...')
+    for n,fn in enumerate(sorted(stellar_list)):
+        img = pyfits.getdata(fn)
+        img = scipy.ndimage.interpolation.rotate(img, 270)  # added to correct for our simulations
+        ## get headers and values to append to file
+        img_header = pyfits.getheader(fn)
+        exptime_header = img_header['exptime']
+        ## write to file
+        outfn = path + '_corrected_' + fn.split('/')[-1]
+        pyfits.writeto(outfn, img, clobber=True)
+        pyfits.setval(outfn, 'EXPTIME', value=exptime_header)
+        pyfits.setval(outfn, 'HISTORY', value='   CORRECTLY ORIENTED frame - created ' + time.strftime("%Y-%m-%d %H:%M:%S",
+                                                                                                 time.gmtime()) + ' (GMT)')
 
+    print('correcting ' + str(len(laser_list)) + ' laser frames...')
+    for n,fn in enumerate(sorted(laser_list)):
+        img = pyfits.getdata(fn)
+        img = scipy.ndimage.interpolation.rotate(img, 270)  # added to correct for our simulations
+        ## get headers and values to append to file
+        img_header = pyfits.getheader(fn)
+        exptime_header = img_header['exptime']
+        ## write to file
+        outfn = path + '_corrected_' + fn.split('/')[-1]
+        pyfits.writeto(outfn, img, clobber=True)
+        pyfits.setval(outfn, 'EXPTIME', value=exptime_header)
+        pyfits.setval(outfn, 'HISTORY', value='   CORRECTLY ORIENTED frame - created ' + time.strftime("%Y-%m-%d %H:%M:%S",
+                                                                                                 time.gmtime()) + ' (GMT)')
 
+    ## input corrected data
+    stellar_list = glob.glob(path + '_corrected_mq_blackbody*.fits')  # mq simulations
+    laser_list = glob.glob(path + '_corrected_mq_etalon.fits')  # mq simulations
+    white_list = glob.glob(path + '_corrected_mq_flat*.fits')  # mq simulations
 
+    print('all frames are in the correct orientation!!!')
 
+    return stellar_list, white_list, laser_list
