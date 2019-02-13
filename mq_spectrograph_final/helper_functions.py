@@ -1122,13 +1122,14 @@ def quick_bg_fix(raw_data, npix=4112):
 
 
 
-def orientation_test_unautomated(stellar_list, white_list, laser_list, path=None):
+def orientation_test_unautomated(stellar_list, white_list, laser_list, path=None, deg_rot=0):
     """
 
     :param stellar_list: the input stellar frames
     :param white_list:  the input bias frames
     :param laser_list: the input laser frames
     :param path: the input path defined at the start of the pipeline
+    :param deg_rot: degree of rotation in clockwise direction
     :return: the three input lists but with frames correctly oriented
 
     ## JP (11/2/2019): currently unautomated, and only corrects by 270 degrees as per our initial MQ simulations
@@ -1142,7 +1143,7 @@ def orientation_test_unautomated(stellar_list, white_list, laser_list, path=None
     print('correcting ' + str(len(white_list)) + ' flat frames...')
     for n,fn in enumerate(sorted(white_list)):
         img = pyfits.getdata(fn)
-        img = scipy.ndimage.interpolation.rotate(img, 270)  # added to correct for our simulations
+        img = scipy.ndimage.interpolation.rotate(img, deg_rot)  # added to correct for our simulations
         ## get headers and comments to append to file
         img_header = pyfits.getheader(fn)
         naxis_1_comment = img_header.comments['NAXIS1']
@@ -1152,10 +1153,10 @@ def orientation_test_unautomated(stellar_list, white_list, laser_list, path=None
         exptime_comment = img_header.comments['exptime']
         # comment_header = img_header['comment']
         # comment_comment = img_header.comments['comment']
-        hier_spec_header = img_header['hierarch spectrograph']
-        hier_spec_comment = img_header.comments['hierarch spectrograph']
-        fib_header = img_header['fiber_1']
-        fib_comment = img_header.comments['fiber_1']
+        #hier_spec_header = img_header['hierarch spectrograph']
+        #hier_spec_comment = img_header.comments['hierarch spectrograph']
+        #fib_header = img_header['fiber_1']
+        #fib_comment = img_header.comments['fiber_1']
         ## write to file
         outfn = path + 'corrected_' + fn.split('/')[-1]
         pyfits.writeto(outfn, img, clobber=True)
@@ -1165,8 +1166,8 @@ def orientation_test_unautomated(stellar_list, white_list, laser_list, path=None
         pyfits.setval(outfn, 'EXTEND', comment=extend_comment)
         pyfits.setval(outfn, 'EXPTIME', value=exptime_header, comment=exptime_comment)
         # pyfits.setval(outfn, 'COMMENT', value=comment_header, comment=comment_comment)
-        pyfits.setval(outfn, 'HIERARCH SPECTROGRAPH', value=hier_spec_header, comment=hier_spec_comment)
-        pyfits.setval(outfn, 'FIBER_1', value=fib_header, comment=fib_comment)
+        #pyfits.setval(outfn, 'HIERARCH SPECTROGRAPH', value=hier_spec_header, comment=hier_spec_comment)
+        #pyfits.setval(outfn, 'FIBER_1', value=fib_header, comment=fib_comment)
         pyfits.setval(outfn, 'HISTORY',
                       value='   CORRECTLY ORIENTED frame - created ' + time.strftime("%Y-%m-%d %H:%M:%S",
                                                                                      time.gmtime()) + ' (GMT)')
@@ -1174,7 +1175,7 @@ def orientation_test_unautomated(stellar_list, white_list, laser_list, path=None
     print('correcting ' + str(len(stellar_list)) + ' stellar frames...')
     for n,fn in enumerate(sorted(stellar_list)):
         img = pyfits.getdata(fn)
-        img = scipy.ndimage.interpolation.rotate(img, 270)  # added to correct for our simulations
+        img = scipy.ndimage.interpolation.rotate(img, deg_rot)  # added to correct for our simulations
         ## get headers and comments to append to file
         img_header = pyfits.getheader(fn)
         naxis_1_comment = img_header.comments['NAXIS1']
@@ -1184,10 +1185,10 @@ def orientation_test_unautomated(stellar_list, white_list, laser_list, path=None
         exptime_comment = img_header.comments['exptime']
         # comment_header = img_header['comment']
         # comment_comment = img_header.comments['comment']
-        hier_spec_header = img_header['hierarch spectrograph']
-        hier_spec_comment = img_header.comments['hierarch spectrograph']
-        fib_header = img_header['fiber_1']
-        fib_comment = img_header.comments['fiber_1']
+        #hier_spec_header = img_header['hierarch spectrograph']
+        #hier_spec_comment = img_header.comments['hierarch spectrograph']
+        #fib_header = img_header['fiber_1']
+        #fib_comment = img_header.comments['fiber_1']
         ## write to file
         outfn = path + 'corrected_' + fn.split('/')[-1]
         pyfits.writeto(outfn, img, clobber=True)
@@ -1197,8 +1198,8 @@ def orientation_test_unautomated(stellar_list, white_list, laser_list, path=None
         pyfits.setval(outfn, 'EXTEND', comment=extend_comment)
         pyfits.setval(outfn, 'EXPTIME', value=exptime_header, comment=exptime_comment)
         # pyfits.setval(outfn, 'COMMENT', value=comment_header, comment=comment_comment)
-        pyfits.setval(outfn, 'HIERARCH SPECTROGRAPH', value=hier_spec_header, comment=hier_spec_comment)
-        pyfits.setval(outfn, 'FIBER_1', value=fib_header, comment=fib_comment)
+        #pyfits.setval(outfn, 'HIERARCH SPECTROGRAPH', value=hier_spec_header, comment=hier_spec_comment)
+        #pyfits.setval(outfn, 'FIBER_1', value=fib_header, comment=fib_comment)
         pyfits.setval(outfn, 'HISTORY',
                       value='   CORRECTLY ORIENTED frame - created ' + time.strftime("%Y-%m-%d %H:%M:%S",
                                                                                      time.gmtime()) + ' (GMT)')
@@ -1206,7 +1207,7 @@ def orientation_test_unautomated(stellar_list, white_list, laser_list, path=None
     print('correcting ' + str(len(laser_list)) + ' laser frames...')
     for n,fn in enumerate(sorted(laser_list)):
         img = pyfits.getdata(fn)
-        img = scipy.ndimage.interpolation.rotate(img, 270)  # added to correct for our simulations
+        img = scipy.ndimage.interpolation.rotate(img, deg_rot)  # added to correct for our simulations
         ## get headers and comments to append to file
         img_header = pyfits.getheader(fn)
         naxis_1_comment = img_header.comments['NAXIS1']
@@ -1216,10 +1217,10 @@ def orientation_test_unautomated(stellar_list, white_list, laser_list, path=None
         exptime_comment = img_header.comments['exptime']
         # comment_header = img_header['comment']
         # comment_comment = img_header.comments['comment']
-        hier_spec_header = img_header['hierarch spectrograph']
-        hier_spec_comment = img_header.comments['hierarch spectrograph']
-        fib_header = img_header['fiber_1']
-        fib_comment = img_header.comments['fiber_1']
+        #hier_spec_header = img_header['hierarch spectrograph']
+        #hier_spec_comment = img_header.comments['hierarch spectrograph']
+        #fib_header = img_header['fiber_1']
+        #fib_comment = img_header.comments['fiber_1']
         ## write to file
         outfn = path + 'corrected_' + fn.split('/')[-1]
         pyfits.writeto(outfn, img, clobber=True)
@@ -1229,8 +1230,8 @@ def orientation_test_unautomated(stellar_list, white_list, laser_list, path=None
         pyfits.setval(outfn, 'EXTEND', comment=extend_comment)
         pyfits.setval(outfn, 'EXPTIME', value=exptime_header, comment=exptime_comment)
         # pyfits.setval(outfn, 'COMMENT', value=comment_header, comment=comment_comment)
-        pyfits.setval(outfn, 'HIERARCH SPECTROGRAPH', value=hier_spec_header, comment=hier_spec_comment)
-        pyfits.setval(outfn, 'FIBER_1', value=fib_header, comment=fib_comment)
+        #pyfits.setval(outfn, 'HIERARCH SPECTROGRAPH', value=hier_spec_header, comment=hier_spec_comment)
+        #pyfits.setval(outfn, 'FIBER_1', value=fib_header, comment=fib_comment)
         pyfits.setval(outfn, 'HISTORY',
                       value='   CORRECTLY ORIENTED frame - created ' + time.strftime("%Y-%m-%d %H:%M:%S",
                                                                                      time.gmtime()) + ' (GMT)')

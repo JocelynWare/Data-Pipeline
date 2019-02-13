@@ -58,7 +58,7 @@ white_list = glob.glob(path + 'mq_flat*.fits') #mq simulations
 ## here we test our input data to see if they are oriented correctly - may not be used when spec is built
 ## currently unautomated, only works for our inputs which are rotated 90 CW to our desired position
 ## only for mac as it imports it strangely
-stellar_list,white_list,laser_list = orientation_test_unautomated(stellar_list, white_list, laser_list,path=path)
+stellar_list,white_list,laser_list = orientation_test_unautomated(stellar_list, white_list, laser_list,path=path, deg_rot=270)
 
 ## generates a dummy image of the first .fit file from the stellar_list and returns the shape of that image
 dumimg = pyfits.getdata(stellar_list[0])
